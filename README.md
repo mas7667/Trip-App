@@ -17,7 +17,7 @@
 
 ## Technologies utilisées
 
-- Backend : Django 4.x
+- Backend : Django 5.1.5
 - Frontend : HTML5, CSS3, Bootstrap 5
 - Base de données : SQLite (dev) / PostgreSQL (production)
 - Outils : Python 3, Git, GitHub
@@ -26,6 +26,17 @@
 
 ## Captures d’écran
 
-*(Les captures d’écran significatives du site seront au fures et à mesures ajouter : tableau de bord, formulaire, liste des événements...)*
+## Installation et vérification
 
----
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py test
+python manage.py runserver
+```
+
+Variables de production : `DJANGO_SECRET_KEY`, `DJANGO_DEBUG` et `DJANGO_ALLOWED_HOSTS`.
+
+Les opérations de création, modification et suppression des voyages et événements sont réservées aux superutilisateurs. Un utilisateur authentifié ne peut gérer que ses propres réservations.

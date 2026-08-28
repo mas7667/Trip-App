@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView, ListView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView, DeleteView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
@@ -10,7 +10,13 @@ from django.urls import reverse_lazy
 from .forms import ReservationForm, VoyageForm, EvenementSportifForm
 
 
-# Create your views here.
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Réserve les opérations de gestion aux superutilisateurs."""
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
 class AccueilView(TemplateView):
     template_name = 'accueil.html'
 
@@ -62,17 +68,11 @@ class ReservationDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return Reservation.objects.filter(client=self.request.user)
     
-class ReservationListViewAdmin(UserPassesTestMixin, ListView):
+class ReservationListViewAdmin(AdminRequiredMixin, ListView):
     model = Reservation
     template_name = 'reservation_list_admin.html'
     context_object_name = 'reservations'
 
-    def test_func(self):
-        # Seuls les superutilisateurs peuvent voir toutes les réservations
-        return self.request.user.is_superuser
-
-
-    
 # REGISTRATIONS    
 class SignupView(CreateView):
     form_class = UserCreationForm
@@ -86,19 +86,19 @@ class VoyageListView(ListView):
     template_name = 'voyage_list.html'
     context_object_name = 'voyages'
 
-class VoyageCreateView(LoginRequiredMixin, CreateView):
+class VoyageCreateView(AdminRequiredMixin, CreateView):
     model = Voyage
     form_class = VoyageForm
     template_name = 'voyage_form.html'
     success_url = reverse_lazy('voyage_list')
 
-class VoyageUpdateView(LoginRequiredMixin, UpdateView):
+class VoyageUpdateView(AdminRequiredMixin, UpdateView):
     model = Voyage
     form_class = VoyageForm
     template_name = 'voyage_form.html'
     success_url = reverse_lazy('voyage_list')
     
-class VoyageDeleteView(LoginRequiredMixin, DeleteView):
+class VoyageDeleteView(AdminRequiredMixin, DeleteView):
     model = Voyage
     template_name = 'voyage_confirm_delete.html'  
     success_url = reverse_lazy('voyage_list')
@@ -123,13 +123,13 @@ class EvenementListView(ListView):
         return context
 
 
-class EvenementCreateView(LoginRequiredMixin, CreateView):
+class EvenementCreateView(AdminRequiredMixin, CreateView):
     model = EvenementSportif
     form_class = EvenementSportifForm
     template_name = 'evenement_form.html'
     success_url = reverse_lazy('evenement_list')
 
-class EvenementUpdateView(LoginRequiredMixin, UpdateView):
+class EvenementUpdateView(AdminRequiredMixin, UpdateView):
     model = EvenementSportif
     form_class = EvenementSportifForm
     template_name = 'evenement_form.html'
@@ -140,7 +140,7 @@ class EvenementDetailView(LoginRequiredMixin, DetailView):
     template_name = 'evenement_detail.html'
     context_object_name = 'evenement'
 
-class EvenementDeleteView(DeleteView):
+class EvenementDeleteView(AdminRequiredMixin, DeleteView):
     model = EvenementSportif
     template_name = 'evenement_confirm_delete.html'
     success_url = reverse_lazy('evenement_list')

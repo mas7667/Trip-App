@@ -1,0 +1,10 @@
+{% extends 'maitre.html' %}
+{% block titre %}<title>Supprimer le voyage</title>{% endblock %}
+{% block contenu %}
+<div class="card border-danger mx-auto" style="max-width: 36rem;">
+  <div class="card-body">
+    <h1 class="h4 card-title">Supprimer « {{ object }} »?</h1>
+    <form method="post">{% csrf_token %}<button class="btn btn-danger" type="submit">Confirmer</button> <a class="btn btn-outline-secondary" href="{% url 'voyage_list' %}">Annuler</a></form>
+  </div>
+</div>
+{% endblock %}
