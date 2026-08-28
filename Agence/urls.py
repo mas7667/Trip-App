@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
 
@@ -31,5 +31,5 @@ urlpatterns = [
     path('evenements/ajouter/', views.EvenementCreateView.as_view(), name='evenement_ajouter'),
     path('evenements/modifier/<int:pk>/', views.EvenementUpdateView.as_view(), name='evenement_modifier'),
     path('evenements/detail/<int:pk>/', views.EvenementDetailView.as_view(), name='evenement_detail'),
-path('evenements/supprimer/<int:pk>/', views.EvenementDeleteView.as_view(), name='evenement_supprimer'),
+    path('evenements/supprimer/<int:pk>/', views.EvenementDeleteView.as_view(), name='evenement_supprimer'),
 ]
